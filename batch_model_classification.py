@@ -11,6 +11,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import RidgeClassifier
 from sklearn.linear_model import Lasso
 from sklearn.linear_model import ElasticNet
+import matplotlib.pyplot as plt
 
 def evaluate_models_classification(X_train, y_train, X_test, y_test, metric='accuracy', random_state=42):
     models = [
