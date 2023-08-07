@@ -1,0 +1,28 @@
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+def fill_missing_values_with_linear_regression(X, y): # input : columns name .X : values ,  y: target .
+    # Separate observations with missing and non-missing values in the training set
+    X_not_missing = train_data.loc[train_data[X].notnull() & train_data[y].notnull()][[X]] 
+    y_not_missing = train_data.loc[train_data[X].notnull() & train_data[y].notnull()][[y]] 
+
+    X_missing = train_data.loc[train_data[X].notnull() & train_data[y].isnull()][[X]] 
+
+    # Remove observations that don't have both X and y values
+    X_not_missing = X_not_missing[X_not_missing.index.isin(y_not_missing.index)]
+    y_not_missing = y_not_missing[y_not_missing.index.isin(X_not_missing.index)]
+
+    # Create and train the linear regression model
+    regressor = LinearRegression()
+    regressor.fit(X_not_missing.values.reshape(-1, 1), y_not_missing)
+
+    # Use the linear regression model to fill missing values
+    y_pred = regressor.predict(X_missing.values.reshape(-1, 1))
+
+    # Update the train_data DataFrame with the filled values
+    train_data.loc[train_data[X].notnull() & train_data[y].isnull(), y] = y_pred
+
+# Fill missing values for the specified columns
+fill_missing_values_with_linear_regression("Cloud_cloud_fraction", "Ozone_cloud_fraction") 
+fill_missing_values_with_linear_regression("SulphurDioxide_solar_zenith_angle", "NitrogenDioxide_solar_zenith_angle")
+
