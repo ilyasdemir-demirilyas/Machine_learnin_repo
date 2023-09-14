@@ -91,3 +91,74 @@ def evaluate_models_classification(X_train, y_train, X_test, y_test, metric='acc
 
 # Fonksiyonu kullanarak istenen metrik değerlerini elde etme ve tahminleri çizdirme
 evaluate_models_classification(X_train, y_train, X_test, y_test, metric='roc')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# alternatif 
+
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier, AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.linear_model import RidgeClassifier, Lasso, ElasticNet
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+from sklearn.metrics import f1_score, make_scorer
+
+# Veri setinizi yükleyin veya oluşturun
+# Örnek olarak:
+# X, y = load_your_data()
+
+# Veri setini eğitim ve test setlerine bölelim
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+
+# Modelleri tanımlayın
+models = {
+    'LGBMClassifier': LGBMClassifier(),
+    'XGBClassifier': XGBClassifier(),
+    'GradientBoostingClassifier': GradientBoostingClassifier(),
+    'RandomForestClassifier': RandomForestClassifier(),
+    'AdaBoostClassifier': AdaBoostClassifier(),
+    'DecisionTreeClassifier': DecisionTreeClassifier(),
+    'SVC': SVC(),
+    'K-Nearest Neighbors Classifier': KNeighborsClassifier(),
+    'Neural Network Classifier': MLPClassifier(),
+    'Ridge Classifier': RidgeClassifier(),
+    'Lasso Classifier': Lasso(),
+    'ElasticNet Classifier': ElasticNet()
+}
+
+# Mikro-averajlı F1 puanını hesaplamak için bir skorlama işlevi tanımlayın
+f1_micro_scorer = make_scorer(f1_score, average='micro')
+
+# Sonuçları saklamak için bir veri çerçevesi oluşturun
+results = {'Model': [], 'Micro F1 Score': []}
+
+# Modelleri eğitin ve sonuçları saklayın
+for model_name, model in models.items():
+    scores = cross_val_score(model, X, y, cv=8 , scoring=f1_micro_scorer)
+    results['Model'].append(model_name)
+    results['Micro F1 Score'].append(np.mean(scores))
+    
+
+# Sonuçları bir veri çerçevesine dönüştürün
+results_df = pd.DataFrame(results)
+
+# Sonuçları görüntüleyin
+results_df
+
